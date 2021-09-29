@@ -62,10 +62,7 @@ RUN apt-get update && apt-get install -y \
     docker-php-ext-install pdo pdo_pgsql pgsql && \
     docker-php-ext-install gd
 
-ADD . /var/www/html/
-
 RUN chown -R 1000:1000 /var/www/html
 WORKDIR "/var/www/html"
 
-# CMD [ "/usr/local/bin/php" ]
-ENTRYPOINT ["/usr/local/bin/php /var/www/html/html/index.php"]
+COPY . /var/www/html/
