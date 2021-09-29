@@ -1,0 +1,10 @@
+version: "3"
+
+services:
+  webserver-apache2:
+    build: ./.docker
+    container_name: event
+    ports:
+      - "9991:80"
+    volumes:
+      - .:/var/www/html
