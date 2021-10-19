@@ -63,6 +63,8 @@ RUN apt-get update && apt-get install -y \
     docker-php-ext-install gd
 
 RUN chown -R 1000:1000 /var/www/html
-WORKDIR "/var/www/html"
+WORKDIR "/var/www/html/"
 
-COPY . /var/www/html/
+COPY . /var/www/
+
+EXPOSE 80

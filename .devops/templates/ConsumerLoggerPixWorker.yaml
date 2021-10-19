@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-consumerloggerpix-worker
+  labels:
+    app: {{ .Release.Name }}-consumerloggerpix-worker
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-consumerloggerpix-worker
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-consumerloggerpix-worker
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+      - name: {{ .Chart.Name }}-consumerloggerpix-worker
+        securityContext:
+          {{- toYaml .Values.securityContext | nindent 12 }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        ports:
+          - containerPort: {{ .Values.service.port }}
+        command: ["/usr/local/bin/php", "/var/www/html/ConsumerLoggerPix.php"]
+

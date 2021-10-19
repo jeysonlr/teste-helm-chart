@@ -1,28 +1,30 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Release.Name }}-worker
+  name: {{ .Release.Name }}-consumernotificationspix-worker
   labels:
-    app: {{ .Release.Name }}-worker
+    app: {{ .Release.Name }}-consumernotificationspix-worker
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
-      app: {{ .Release.Name }}-worker
+      app: {{ .Release.Name }}-consumernotificationspix-worker
   template:
     metadata:
       labels:
-        app: {{ .Release.Name }}-worker
+        app: {{ .Release.Name }}-consumernotificationspix-worker
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       containers:
-      - name: {{ .Chart.Name }}-worker
+      - name: {{ .Chart.Name }}-consumernotificationspix-worker
         securityContext:
           {{- toYaml .Values.securityContext | nindent 12 }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
-        command: ["/usr/local/bin/php"]
-        args: ["/var/www/html/html/index.php"]
+        ports:
+          - containerPort: {{ .Values.service.port }}
+        command: ["/usr/local/bin/php", "/var/www/html/ConsumerNotificationsPix.php"]
+

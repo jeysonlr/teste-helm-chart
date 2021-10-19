@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-consumernotificationspixb2c-worker
+  labels:
+    app: {{ .Release.Name }}-consumernotificationspixb2c-worker
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-consumernotificationspixb2c-worker
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-consumernotificationspixb2c-worker
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+      - name: {{ .Chart.Name }}-consumernotificationspixb2c-worker
+        securityContext:
+          {{- toYaml .Values.securityContext | nindent 12 }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        ports:
+          - containerPort: {{ .Values.service.port }}
+        command: ["/usr/local/bin/php", "/var/www/html/ConsumerNotificationsPixB2c.php"]
+
